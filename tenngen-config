@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+export ROOTDIR = /home/tmengel/root 
+
+
+export ROOTLIBDIR=$ROOTDIR/lib
+export ROOTINCDIR=$ROOTDIR/include
+
+./configure --cxx=g++ --with-root-lib=$ROOTLIBDIR --with-root-include=$ROOTINCDIR
+
+make
