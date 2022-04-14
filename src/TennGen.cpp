@@ -133,7 +133,9 @@ void TennGen::init(){
  
 
 }
-
+TGEvent& TennGen::streamInit(){
+        
+}
 const int TG200::raw_high[]={608,430,311,145};
 const int TG200::raw_low[]={431,312,146,56};
 const int TG200::raw_bin[]= {177,118,165,89};

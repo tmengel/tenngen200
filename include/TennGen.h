@@ -101,7 +101,7 @@ private:
     TGSettings settings;
     TGEventList events;
     TRandom3* fRandom;
-   
+    int streamingEvent=0;
 
 
 public:
@@ -208,6 +208,12 @@ public:
     TGEvent& at(int i) {return events[i];}
     int size(){return events.size();}
 
+    TGEvent& next(){
+        return streamInit();
+    }
+
+    TGEvent& streamInit();
+
 
 };
 
@@ -310,8 +316,10 @@ public:
     
 
     }
-   
     TGEventList events(){return tgEvents;}
+    TGEvent& operator[](int i) {return tgEvents[i];}
+    const TGEvent& operator[](int i) const {return tgEvents[i];}
+    TGEvent& at(int i) {return tgEvents[i];}
     void genEvents(TRandom3* fRandom);
     void genEventsQA(TRandom3* fRandom);
     void getRootDistros();

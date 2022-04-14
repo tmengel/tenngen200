@@ -35,7 +35,7 @@ Optional external packages.
 --with-PACKAGE-version=VER : When using an LCG platform, set with the option
                              --lcg above, automatically set the PACKAGE path
                              for the given version VER.
-
+  pythia8 : Embedding pythia jets into TennGen Backgrounds
   fastjet3 : Building of jets using the FastJet package, version 3.
   	     (run fastjet-config --prefix to see which path to use.)
   root     : Use ROOT trees and histograms with TennGen.
@@ -68,7 +68,7 @@ Advanced options.
 BLOCKTEXT
 OPTIONS="-h --h -help --help --enable-debug --enable-optdebug --lcg"
 OPTIONS+=" --prefix --prefix-bin --prefix-lib --prefix-include --prefix-share"
-for PKG in "fastjet3" "root"; do
+for PKG in "fastjet3" "root" "pythia8"; do
     OPTIONS+=" --with-$PKG --with-$PKG-bin --with-$PKG-lib --with-$PKG-include"
     OPTIONS+="  --with-$PKG-config --with-$PKG-version"; done
 OPTIONS+=" --arch --cxx --cxx-common --cxx-shared --cxx-soname --lib-suffix"
@@ -308,6 +308,8 @@ configure_package "FASTJET3" "/afs/cern.ch/sw/lcg/releases/fastjet"\
      "" "fastjet/config.h" "fastjet" ""
 configure_package "ROOT" "/afs/cern.ch/sw/lcg/releases/ROOT" "root-config"\
     "--bindir" "--incdir" "--libdir" "rootcint;root-config" "TROOT.h" "Core" ""
+configure_package "PYTHIA8" "/afs/cern.ch/sw/lcg/releases/pythia8" "pythia8-config"\
+    "bin" "--incdir" "--libdir" ""
 
 
 

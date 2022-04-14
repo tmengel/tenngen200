@@ -1,10 +1,19 @@
 #!/usr/bin/env bash
-export ROOTDIR = /home/tmengel/root 
-
+export ROOTDIR=/home/tmengel/root 
 
 export ROOTLIBDIR=$ROOTDIR/lib
 export ROOTINCDIR=$ROOTDIR/include
+export ROOTCONFIG=$ROOTDIR/bin
 
-./configure --cxx=g++ --with-root-lib=$ROOTLIBDIR --with-root-include=$ROOTINCDIR
+export PYTHIABIN=/home/tmengel/pythia8307/bin
+export PYTHIALIB=/home/tmengel/pythia8307/lib
+export PYTHIAINC=/home/tmengel/pythia8307/include
+
+export FASTJET=/home/tmengel/fastjet-install/bin
+export FASTLIB=/home/tmengel/fastjet-install/lib
+export FASTINC=/home/tmengel/fastjet-install/include
+
+
+./configure --cxx=g++ --with-root-lib=$ROOTCONFIG --with-root-lib=$ROOTLIBDIR --with-root-include=$ROOTINCDIR --with-pythia8-config=$PYTHIABIN --with-pythia8-lib=$PYTHIALIB --with-pythia8-include=$PYTHIAINC --with-fastjet3-config=$FASTJET --with-fastjet3-lib=$FASTLIB --with-fastjet3-include=$FASTINC
 
 make
