@@ -101,7 +101,6 @@ private:
     TGSettings settings;
     TGEventList events;
     TRandom3* fRandom;
-    int streamingEvent=0;
 
 
 public:
@@ -199,7 +198,6 @@ public:
     }
 
 
-
     void init();
 
 
@@ -208,13 +206,7 @@ public:
     TGEvent& at(int i) {return events[i];}
     int size(){return events.size();}
 
-    TGEvent& next(){
-        return streamInit();
-    }
-
-    TGEvent& streamInit();
-
-
+ 
 };
 
 class TG200{
@@ -316,6 +308,7 @@ public:
     
 
     }
+    void streamGen(TGSettings inputSettings, TRandom3* fRandom);
     TGEventList events(){return tgEvents;}
     TGEvent& operator[](int i) {return tgEvents[i];}
     const TGEvent& operator[](int i) const {return tgEvents[i];}
@@ -323,12 +316,14 @@ public:
     void genEvents(TRandom3* fRandom);
     void genEventsQA(TRandom3* fRandom);
     void getRootDistros();
+    void clearDistroBuffer();
+    void clearEventBuffer();
+
     float dNdPhi();
     int SpectraCentBin();
     int HarmonicCentBin();
-    void clearEventBuffer();
     float HarmonicFunction(const int harmonicN);
-    void clearQABuffer();
+    
 
 };
 

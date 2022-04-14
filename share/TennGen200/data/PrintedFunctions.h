@@ -185,9 +185,125 @@ float HarmonicFunction(float pT, int Cent, int Harmonic, int KF){
 		else if(part==2){
 			if(Vn==0){ return -0.00897794+0.0202506*pt+0.159824*pt*pt+-0.0719297*pt*pt*pt+0.00894275*pt*pt*pt*pt;}
 			else if(Vn==1){ return -0.00854808+0.0237419*pt+0.00737678*pt*pt+0.00711372*pt*pt*pt+-0.00275382*pt*pt*pt*pt;}
-			else if(Vn==2){ return 6.95287e-310+4.65587e-310*pt+4.65587e-310*pt*pt+6.89827e-310*pt*pt*pt+5.05923e-321*pt*pt*pt*pt;}
+			else if(Vn==2){ return 6.95282e-310+4.68399e-310*pt+4.684e-310*pt*pt+6.95282e-310*pt*pt*pt+5.05923e-321*pt*pt*pt*pt;}
 		}
 	}
+}
+Double_t HarmonicFunction(Double_t *pT, Int_t* par){
+	Double_t pt;
+	Int_t part = par[0];
+	if(pT[0] > 4.0){  pt = 4.0;  }
+	else if(pT[0] < 0.5){ return 0.0; }
+	else{ pt = pT[0]; }
+
+	Int_t cent	= par[1];
+	
+
+	Int_t Vn	=par[2];
+
+	if(cent==0){
+		if(part==0){
+			if(Vn==0){ return -0.0143392+0.0759773*pt+-0.0154024*pt*pt+-0.000915513*pt*pt*pt+0.000264875*pt*pt*pt*pt;}
+			else if(Vn==1){ return -0.00558048+0.0136122*pt+0.0356842*pt*pt+-0.0164884*pt*pt*pt+0.00195171*pt*pt*pt*pt;}
+			else if(Vn==2){ return -0.00256332+-0.00483424*pt+0.0390473*pt*pt+-0.016438*pt*pt*pt+0.00205353*pt*pt*pt*pt;}
+		}
+		else if(part==1){
+			if(Vn==0){ return -0.0287711+0.0777838*pt+-0.0110908*pt*pt+-0.00251265*pt*pt*pt+0.000435634*pt*pt*pt*pt;}
+			else if(Vn==1){ return -0.00843333+0.00413273*pt+0.03708*pt*pt+-0.0140296*pt*pt*pt+0.00138853*pt*pt*pt*pt;}
+			else if(Vn==2){ return -0.0147847+0.0238129*pt+0.00149144*pt*pt+0.00122299*pt*pt*pt+-0.000583605*pt*pt*pt*pt;}
+		}
+		else if(part==2){
+			if(Vn==0){ return 0.0139405+-0.0778337*pt+0.122313*pt*pt+-0.0441081*pt*pt*pt+0.00502149*pt*pt*pt*pt;}
+			else if(Vn==1){ return 0.0204243+-0.0952528*pt+0.118049*pt*pt+-0.0375978*pt*pt*pt+0.00388916*pt*pt*pt*pt;}
+			else if(Vn==2){ return 0.0368641+-0.132059*pt+0.140577*pt*pt+-0.0465704*pt*pt*pt+0.00527664*pt*pt*pt*pt;}
+		}
+	}
+	else if(cent==1){
+		if(part==0){
+			if(Vn==0){ return -0.0164604+0.119236*pt+-0.0140501*pt*pt+-0.00715798*pt*pt*pt+0.00137041*pt*pt*pt*pt;}
+			else if(Vn==1){ return -0.00615225+0.0205719*pt+0.0373663*pt*pt+-0.0176272*pt*pt*pt+0.00201875*pt*pt*pt*pt;}
+			else if(Vn==2){ return 0.00343526+-0.0156758*pt+0.058631*pt*pt+-0.0234438*pt*pt*pt+0.00258536*pt*pt*pt*pt;}
+		}
+		else if(part==1){
+			if(Vn==0){ return -0.0335949+0.108473*pt+0.00189956*pt*pt+-0.0119077*pt*pt*pt+0.00177362*pt*pt*pt*pt;}
+			else if(Vn==1){ return -0.0141866+0.0239085*pt+0.0233996*pt*pt+-0.0081926*pt*pt*pt+0.000430152*pt*pt*pt*pt;}
+			else if(Vn==2){ return 0.0178734+-0.0725294*pt+0.105302*pt*pt+-0.0391775*pt*pt*pt+0.00466704*pt*pt*pt*pt;}
+		}
+		else if(part==2){
+			if(Vn==0){ return 0.0147481+-0.0885341*pt+0.16892*pt*pt+-0.0604128*pt*pt*pt+0.00661366*pt*pt*pt*pt;}
+			else if(Vn==1){ return 0.020801+-0.0910493*pt+0.118184*pt*pt+-0.0365487*pt*pt*pt+0.0035618*pt*pt*pt*pt;}
+			else if(Vn==2){ return 0.0300511+-0.108966*pt+0.122315*pt*pt+-0.0365423*pt*pt*pt+0.00350489*pt*pt*pt*pt;}
+		}
+	}
+	else if(cent==2){
+		if(part==0){
+			if(Vn==0){ return -0.0220529+0.172125*pt+-0.0353618*pt*pt+-0.003559*pt*pt*pt+0.00113968*pt*pt*pt*pt;}
+			else if(Vn==1){ return -0.0066372+0.0262161*pt+0.0372216*pt*pt+-0.0187145*pt*pt*pt+0.00228567*pt*pt*pt*pt;}
+			else if(Vn==2){ return 0.000152642+0.00135534*pt+0.0523496*pt*pt+-0.0225954*pt*pt*pt+0.0025451*pt*pt*pt*pt;}
+		}
+		else if(part==1){
+			if(Vn==0){ return -0.0424241+0.152629*pt+-0.00506494*pt*pt+-0.0151633*pt*pt*pt+0.00254353*pt*pt*pt*pt;}
+			else if(Vn==1){ return -0.0149325+0.0253627*pt+0.0329371*pt*pt+-0.0153877*pt*pt*pt+0.00170996*pt*pt*pt*pt;}
+			else if(Vn==2){ return -0.0171898+0.0261749*pt+0.032913*pt*pt+-0.0180592*pt*pt*pt+0.00240376*pt*pt*pt*pt;}
+		}
+		else if(part==2){
+			if(Vn==0){ return 0.0128407+-0.0812974*pt+0.196424*pt*pt+-0.0729275*pt*pt*pt+0.0081403*pt*pt*pt*pt;}
+			else if(Vn==1){ return 0.0216277+-0.0905268*pt+0.125852*pt*pt+-0.0410326*pt*pt*pt+0.00433817*pt*pt*pt*pt;}
+			else if(Vn==2){ return 0.0296393+-0.113592*pt+0.137947*pt*pt+-0.0424535*pt*pt*pt+0.00422479*pt*pt*pt*pt;}
+		}
+	}
+	else if(cent==3){
+		if(part==0){
+			if(Vn==0){ return -0.0273469+0.215291*pt+-0.0580156*pt*pt+0.0015503*pt*pt*pt+0.00068957*pt*pt*pt*pt;}
+			else if(Vn==1){ return -0.00634738+0.0244379*pt+0.0472794*pt*pt+-0.0265474*pt*pt*pt+0.00383202*pt*pt*pt*pt;}
+			else if(Vn==2){ return 0.00529299+-0.0155944*pt+0.0851034*pt*pt+-0.0399046*pt*pt*pt+0.00537977*pt*pt*pt*pt;}
+		}
+		else if(part==1){
+			if(Vn==0){ return -0.0457415+0.184931*pt+-0.0184578*pt*pt+-0.0130774*pt*pt*pt+0.00241422*pt*pt*pt*pt;}
+			else if(Vn==1){ return 0.00059818+-0.0174573*pt+0.0752039*pt*pt+-0.0318181*pt*pt*pt+0.00386052*pt*pt*pt*pt;}
+			else if(Vn==2){ return 0.00319935+-0.0357498*pt+0.0956003*pt*pt+-0.0389201*pt*pt*pt+0.0046787*pt*pt*pt*pt;}
+		}
+		else if(part==2){
+			if(Vn==0){ return 0.00914554+-0.0597874*pt+0.203465*pt*pt+-0.0797661*pt*pt*pt+0.00929514*pt*pt*pt*pt;}
+			else if(Vn==1){ return 0.0304227+-0.111558*pt+0.150866*pt*pt+-0.0511995*pt*pt*pt+0.00556649*pt*pt*pt*pt;}
+			else if(Vn==2){ return -0.0025491+-0.0227755*pt+0.0628781*pt*pt+-0.0165041*pt*pt*pt+0.00111185*pt*pt*pt*pt;}
+		}
+	}
+	else if(cent==4){
+		if(part==0){
+			if(Vn==0){ return -0.0300557+0.23959*pt+-0.0712208*pt*pt+0.004233*pt*pt*pt+0.000504197*pt*pt*pt*pt;}
+			else if(Vn==1){ return -0.0047109+0.0195728*pt+0.0522525*pt*pt+-0.0282469*pt*pt*pt+0.00377098*pt*pt*pt*pt;}
+			else if(Vn==2){ return -0.0132215+0.0468*pt+0.0341852*pt*pt+-0.0206421*pt*pt*pt+0.00294137*pt*pt*pt*pt;}
+		}
+		else if(part==1){
+			if(Vn==0){ return -0.0425067+0.191418*pt+-0.0147714*pt*pt+-0.0177701*pt*pt*pt+0.00341417*pt*pt*pt*pt;}
+			else if(Vn==1){ return -0.000136675+-0.0175618*pt+0.0863983*pt*pt+-0.0430817*pt*pt*pt+0.00620464*pt*pt*pt*pt;}
+			else if(Vn==2){ return -0.0570229+0.17675*pt+-0.123802*pt*pt+0.0478088*pt*pt*pt+-0.00638515*pt*pt*pt*pt;}
+		}
+		else if(part==2){
+			if(Vn==0){ return 0.0054852+-0.0327023*pt+0.19693*pt*pt+-0.0815048*pt*pt*pt+0.0098101*pt*pt*pt*pt;}
+			else if(Vn==1){ return 0.0109575+-0.0600514*pt+0.115052*pt*pt+-0.0418587*pt*pt*pt+0.00470501*pt*pt*pt*pt;}
+			else if(Vn==2){ return 0.04566+-0.148386*pt+0.193706*pt*pt+-0.0675996*pt*pt*pt+0.00792379*pt*pt*pt*pt;}
+		}
+	}
+	else if(cent==5){
+		if(part==0){
+			if(Vn==0){ return -0.0327924+0.250176*pt+-0.0765101*pt*pt+0.00390845*pt*pt*pt+0.000819225*pt*pt*pt*pt;}
+			else if(Vn==1){ return -0.003819+0.0112537*pt+0.0588299*pt*pt+-0.0333377*pt*pt*pt+0.0046983*pt*pt*pt*pt;}
+			else if(Vn==2){ return -0.00266408+0.00640717*pt+0.023585*pt*pt+-0.0121294*pt*pt*pt+0.00172664*pt*pt*pt*pt;}
+		}
+		else if(part==1){
+			if(Vn==0){ return -0.0131631+0.0325158*pt+-0.00707803*pt*pt+0.000728541*pt*pt*pt+-8.91768e-05*pt*pt*pt*pt;}
+			else if(Vn==1){ return -0.0571195+0.249406*pt+-0.074045*pt*pt+0.00463722*pt*pt*pt+0.000540562*pt*pt*pt*pt;}
+			else if(Vn==2){ return -0.0143528+0.0402737*pt+0.0106742*pt*pt+-0.00873702*pt*pt*pt+0.000978765*pt*pt*pt*pt;}
+		}
+		else if(part==2){
+			if(Vn==0){ return -0.00897794+0.0202506*pt+0.159824*pt*pt+-0.0719297*pt*pt*pt+0.00894275*pt*pt*pt*pt;}
+			else if(Vn==1){ return -0.00854808+0.0237419*pt+0.00737678*pt*pt+0.00711372*pt*pt*pt+-0.00275382*pt*pt*pt*pt;}
+			else if(Vn==2){ return 0.0;}
+		}
+	}
+	return 0.0;
 }
 
 

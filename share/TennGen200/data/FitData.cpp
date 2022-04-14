@@ -483,6 +483,29 @@ int FitData(){
 	}
 	fout << "}"<<endl;
 
+	fout << "Double_t HarmonicFunction(Double_t *pT, Int_t* par){"<<endl;
+	fout << "\tDouble_t pt;\n\tInt_t part = par[0];\n\tif(pT[0] > 4.0){  pt = 4.0;  }\n\telse if(pT[0] < 0.5){ return 0.0; }\n\telse{ pt = pT[0]; }\n\n\tInt_t cent\t= par[1];\n\t\n\n\tint Vn\t=par[2];\n" << endl;
+	for(int i=0;i<6;i++){
+		if(i==0){fout<<"\tif(cent=="<<i<<"){\n";}
+		else{fout<<"\telse if(cent=="<<i<<"){\n";}
+
+		for(int j=0;j<3;j++){
+			if(j==0){fout<<"\t\tif(part=="<<j<<"){\n";}
+			else{fout<<"\t\telse if(part=="<<j<<"){\n";}
+			for(int k=0;k<3;k++){
+				if(k==0){fout<<"\t\t\tif(Vn=="<<k<<"){";}
+				else{fout<<"\t\t\telse if(Vn=="<<k<<"){";}
+				fout <<" return "<< P0[j][i][k] <<"+"<<P1[j][i][k]<<"*pt+"<< P2[j][i][k]<<"*pt*pt+"<<P3[j][i][k]<<"*pt*pt*pt+" <<P4[j][i][k] <<"*pt*pt*pt*pt;}"<<endl;
+			}
+			fout <<"\t\t}\n";
+
+			
+		}
+		fout <<"\t}\n";
+	
+		
+	}
+	fout << "}"<<endl;
 	fout <<"\n\n float MASS[4][6] ={";
 	for(int i =0; i<4;i++){
 		for(int j =0;j<6;j++){

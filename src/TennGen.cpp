@@ -3,7 +3,14 @@
 #include <iostream>
 #include <sys/stat.h>
 #include <sys/types.h>
-
+#include "TImage.h"
+#include "TKey.h"
+#include "TROOT.h"
+#include "Riostream.h"
+#include <TSystem.h>
+#include "TClass.h"
+#include "TF1.h"
+#include "TH2.h"
 TENNGEN_BEGIN_NAMESPACE
 
 void TennGen::init(){
@@ -68,7 +75,7 @@ void TennGen::init(){
         std::cout << "Running TennGen QA "  << std::endl ;
         std::cout << "======================================="<<std::endl;
         std::cout << "collison energy: " << settings.getCollEn() <<std::endl;
-        std::cout << "nEvents: 1000000"  << std::endl;
+        std::cout << "nEvents: 10000000"  << std::endl;
         std::cout << "Cent: ALL" << std::endl;
         std::cout << "Eta: " << settings.getEtaRange() << std::endl;
 
@@ -82,40 +89,41 @@ void TennGen::init(){
   
         if(settings.getNevents()>50000){
 
-                int lastbatch = settings.getNevents()%50000;
-                int numbatches = (settings.getNevents()-lastbatch)/50000;
-                int filelabel;
-                if(lastbatch !=0) filelabel = numbatches+1;
-                else filelabel = numbatches;
-                TGSettings TempParams = settings;
-                TempParams.setNevents(50000);
+        int lastbatch = settings.getNevents()%50000;
+        int numbatches = (settings.getNevents()-lastbatch)/50000;
+        int filelabel;
+        if(lastbatch !=0) filelabel = numbatches+1;
+        else filelabel = numbatches;
+        TGSettings TempParams = settings;
+        TempParams.setNevents(50000);
 
-                std::cout << "Seperatating batches: "  << std::endl ;
+        std::cout << "Seperatating batches: "  << std::endl ;
 
-                std::cout << "N 50K batches: "  << numbatches <<std::endl ;
-                if(lastbatch!=0) std::cout << "Size of last batch "  << lastbatch <<std::endl ;
-                std::cout << "======================================="<<std::endl;
+        std::cout << "N 50K batches: "  << numbatches <<std::endl ;
+        if(lastbatch!=0) std::cout << "Size of last batch "  << lastbatch <<std::endl ;
+        std::cout << "======================================="<<std::endl;
 
-                for(int k =0; k< (numbatches);k++){
+        for(int k =0; k< (numbatches);k++){
+
                 TempParams.setOutputDir(settings.getOutputDir()+"/"+std::to_string(k)+"_of_"+std::to_string(filelabel)+"_");
                 //std::cout << "OutDir(s): " << TempParams.getOutputDir() << std::endl;
                 if(settings.getCollEn()==200) TG200 tg(TempParams,fRandom);
                 //if(settings.getCollEn()==5020) TG5020 tg(TempParams,fRandom);
 
                 std::cout << "Event " << (k+1)*50000 << " of " << settings.getNevents() << " completed" <<std::endl;
-                
-                }
-                
-                if(lastbatch!=0){
+
+        }
+
+        if(lastbatch!=0){
                 TempParams.setNevents(lastbatch);
                 TempParams.setOutputDir(settings.getOutputDir()+"/"+std::to_string(numbatches+1)+"_of_"+std::to_string(filelabel)+"_");
                 if(settings.getCollEn()==200) TG200 tg(TempParams,fRandom);
                 //if(settings.getCollEn()==5020) TG5020 tg(TempParams,fRandom);
                 //std::cout << "OutDir(s): " << TempParams.getOutputDir() << std::endl;
                 std::cout << "Event " << settings.getNevents() << " of " << settings.getNevents() << " completed" <<std::endl;
-                }
-                std::cout << "======================================="<<std::endl;
-                std::cout << "======================================="<<std::endl;
+        }
+        std::cout << "======================================="<<std::endl;
+        std::cout << "======================================="<<std::endl;
 
 
         }
@@ -133,9 +141,7 @@ void TennGen::init(){
  
 
 }
-TGEvent& TennGen::streamInit(){
-        
-}
+
 const int TG200::raw_high[]={608,430,311,145};
 const int TG200::raw_low[]={431,312,146,56};
 const int TG200::raw_bin[]= {177,118,165,89};
@@ -149,7 +155,6 @@ const float TG200::kaplusRatios[] = {0.063108127,0.061919505,0.060984334,0.05973
 const float TG200::kaminusRatios[] = {0.06118953,0.059236326, 0.058838257,0.057484421};
 const float TG200::proRatios[] = {0.043099904,0.041486068,0.042385006,0.042604604};
 const float TG200::pbarRatios[] = {0.03295875,0.032404541,0.033371486,0.034295646};
-
 
 float TG200::HarmonicFunction(const int harmonicN){
                        
@@ -380,7 +385,6 @@ float TG200::HarmonicFunction(const int harmonicN){
 float TG200::dNdPhi(){
         return (1.0 + 2.0*(v1*cos(phiPart-psi1)+v2*cos(2.0*(phiPart-psi2))+v3*cos(3.0*(phiPart-psi3))+v4*cos(4.0*(phiPart-psi4))))/(2.0*M_PI);
 }
-
 int TG200::SpectraCentBin(){
         if(multiplicity>=431){return 0;}
         else if(multiplicity>=312){return 1;}
@@ -405,7 +409,7 @@ void TG200::clearEventBuffer(){
 
 
 }
-void TG200::clearQABuffer(){
+void TG200::clearDistroBuffer(){
         delete ptDistroPip;
         delete ptDistroPim;
         delete ptDistroKap;
@@ -414,7 +418,6 @@ void TG200::clearQABuffer(){
         delete ptDistroPbar;
         delete MultiDistro;
 }
-
 void TG200::genEvents(TRandom3* fRandom){
 
         while(tgEvents.size()!=settings.getNevents()){ 
@@ -502,7 +505,6 @@ void TG200::genEvents(TRandom3* fRandom){
         }
         myFile->Close();
 }
-
 void TG200::genEventsQA(TRandom3* fRandom){
         
         string qaString = settings.getOutputDir()+"TG_200GeVQA.root";
@@ -514,6 +516,7 @@ void TG200::genEventsQA(TRandom3* fRandom){
         TDirectory *cent4 = qa->mkdir("40-50%");
         TDirectory *cent5 = qa->mkdir("50-60%");
 
+       
         TH1D *histpsi_1 = new TH1D("histpsi_1", "#Psi_{EP,1} Thrown distribution for all particles",100,-0.5*M_PI,2.5*M_PI); 
         histpsi_1 ->SetXTitle("#Psi_{EP,1} (radians)");
         histpsi_1 ->SetYTitle("dN/d#Psi_{EP,1}");
@@ -531,10 +534,10 @@ void TG200::genEventsQA(TRandom3* fRandom){
         histpsi_4 ->SetYTitle("dN/d#Psi_{EP,4}");
 
 
-        TH2D *v1_pi_h = new TH2D("v1_pi_h" , "v_{1} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 200 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v2_pi_h = new TH2D("v2_pi_h" , "v_{2} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v3_pi_h = new TH2D("v3_pi_h" , "v_{3} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v4_pi_h = new TH2D("v4_pi_h" , "v_{4} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v1_pi_h = new TH2D("v1_pi_h" , "v_{1} vs p_{T} for #pi^{+}, #pi^{-}"  , 200 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v2_pi_h = new TH2D("v2_pi_h" , "v_{2} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v3_pi_h = new TH2D("v3_pi_h" , "v_{3} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v4_pi_h = new TH2D("v4_pi_h" , "v_{4} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v1_K_h = new TH2D("v1_K_h" , "v_{1} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v2_K_h = new TH2D("v2_K_h" , "v_{2} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v3_K_h = new TH2D("v3_K_h" , "v_{3} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
@@ -544,10 +547,10 @@ void TG200::genEventsQA(TRandom3* fRandom){
         TH2D *v3_P_h = new TH2D("v3_P_h" , "v_{3} vs p_{T} for p^{+}, p^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v4_P_h = new TH2D("v4_P_h" , "v_{4} vs p_{T} for p^{+}, p^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
 
-        TH2D *v1_pi_h1 = new TH2D("v1_pi_h1" , "v_{1} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 200 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v2_pi_h1 = new TH2D("v2_pi_h1" , "v_{2} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v3_pi_h1 = new TH2D("v3_pi_h1" , "v_{3} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v4_pi_h1 = new TH2D("v4_pi_h1" , "v_{4} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v1_pi_h1 = new TH2D("v1_pi_h1" , "v_{1} vs p_{T} for #pi^{+}, #pi^{-}"  , 200 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v2_pi_h1 = new TH2D("v2_pi_h1" , "v_{2} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v3_pi_h1 = new TH2D("v3_pi_h1" , "v_{3} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v4_pi_h1 = new TH2D("v4_pi_h1" , "v_{4} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v1_K_h1 = new TH2D("v1_K_h1" , "v_{1} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v2_K_h1 = new TH2D("v2_K_h1" , "v_{2} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v3_K_h1 = new TH2D("v3_K_h1" , "v_{3} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
@@ -557,10 +560,10 @@ void TG200::genEventsQA(TRandom3* fRandom){
         TH2D *v3_P_h1 = new TH2D("v3_P_h1" , "v_{3} vs p_{T} for p^{+}, p^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v4_P_h1 = new TH2D("v4_P_h1" , "v_{4} vs p_{T} for p^{+}, p^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
 
-        TH2D *v1_pi_h2 = new TH2D("v1_pi_h2" , "v_{1} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 200 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v2_pi_h2 = new TH2D("v2_pi_h2" , "v_{2} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v3_pi_h2 = new TH2D("v3_pi_h2" , "v_{3} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v4_pi_h2 = new TH2D("v4_pi_h2" , "v_{4} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v1_pi_h2 = new TH2D("v1_pi_h2" , "v_{1} vs p_{T} for #pi^{+}, #pi^{-}"  , 200 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v2_pi_h2 = new TH2D("v2_pi_h2" , "v_{2} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v3_pi_h2 = new TH2D("v3_pi_h2" , "v_{3} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v4_pi_h2 = new TH2D("v4_pi_h2" , "v_{4} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v1_K_h2 = new TH2D("v1_K_h2" , "v_{1} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v2_K_h2 = new TH2D("v2_K_h2" , "v_{2} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v3_K_h2 = new TH2D("v3_K_h2" , "v_{3} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
@@ -570,10 +573,10 @@ void TG200::genEventsQA(TRandom3* fRandom){
         TH2D *v3_P_h2 = new TH2D("v3_P_h2" , "v_{3} vs p_{T} for p^{+}, p^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v4_P_h2 = new TH2D("v4_P_h2" , "v_{4} vs p_{T} for p^{+}, p^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
 
-        TH2D *v1_pi_h3 = new TH2D("v1_pi_h3" , "v_{1} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 200 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v2_pi_h3 = new TH2D("v2_pi_h3" , "v_{2} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v3_pi_h3 = new TH2D("v3_pi_h3" , "v_{3} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v4_pi_h3 = new TH2D("v4_pi_h3" , "v_{4} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v1_pi_h3 = new TH2D("v1_pi_h3" , "v_{1} vs p_{T} for #pi^{+}, #pi^{-}"  , 200 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v2_pi_h3 = new TH2D("v2_pi_h3" , "v_{2} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v3_pi_h3 = new TH2D("v3_pi_h3" , "v_{3} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v4_pi_h3 = new TH2D("v4_pi_h3" , "v_{4} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v1_K_h3 = new TH2D("v1_K_h3" , "v_{1} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v2_K_h3 = new TH2D("v2_K_h3" , "v_{2} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v3_K_h3 = new TH2D("v3_K_h3" , "v_{3} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
@@ -583,10 +586,10 @@ void TG200::genEventsQA(TRandom3* fRandom){
         TH2D *v3_P_h3 = new TH2D("v3_P_h3" , "v_{3} vs p_{T} for p^{+}, p^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v4_P_h3 = new TH2D("v4_P_h3" , "v_{4} vs p_{T} for p^{+}, p^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
 
-        TH2D *v1_pi_h4 = new TH2D("v1_pi_h4" , "v_{1} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 200 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v2_pi_h4 = new TH2D("v2_pi_h4" , "v_{2} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v3_pi_h4 = new TH2D("v3_pi_h4" , "v_{3} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v4_pi_h4 = new TH2D("v4_pi_h4" , "v_{4} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v1_pi_h4 = new TH2D("v1_pi_h4" , "v_{1} vs p_{T} for #pi^{+}, #pi^{-}"  , 200 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v2_pi_h4 = new TH2D("v2_pi_h4" , "v_{2} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v3_pi_h4 = new TH2D("v3_pi_h4" , "v_{3} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v4_pi_h4 = new TH2D("v4_pi_h4" , "v_{4} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v1_K_h4 = new TH2D("v1_K_h4" , "v_{1} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v2_K_h4 = new TH2D("v2_K_h4" , "v_{2} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v3_K_h4 = new TH2D("v3_K_h4" , "v_{3} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
@@ -596,10 +599,10 @@ void TG200::genEventsQA(TRandom3* fRandom){
         TH2D *v3_P_h4 = new TH2D("v3_P_h4" , "v_{3} vs p_{T} for p^{+}, p^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v4_P_h4 = new TH2D("v4_P_h4" , "v_{4} vs p_{T} for p^{+}, p^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
 
-        TH2D *v1_pi_h5 = new TH2D("v1_pi_h5" , "v_{1} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 200 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v2_pi_h5 = new TH2D("v2_pi_h5" , "v_{2} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v3_pi_h5 = new TH2D("v3_pi_h5" , "v_{3} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
-        TH2D *v4_pi_h5 = new TH2D("v4_pi_h5" , "v_{4} vs p_{T} for #pi^{+}, #pi^{-}, #pi^{0}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v1_pi_h5 = new TH2D("v1_pi_h5" , "v_{1} vs p_{T} for #pi^{+}, #pi^{-}"  , 200 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v2_pi_h5 = new TH2D("v2_pi_h5" , "v_{2} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v3_pi_h5 = new TH2D("v3_pi_h5" , "v_{3} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
+        TH2D *v4_pi_h5 = new TH2D("v4_pi_h5" , "v_{4} vs p_{T} for #pi^{+}, #pi^{-}"  , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v1_K_h5 = new TH2D("v1_K_h5" , "v_{1} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v2_K_h5 = new TH2D("v2_K_h5" , "v_{2} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v3_K_h5 = new TH2D("v3_K_h5" , "v_{3} vs p_{T} for K^{+}, K^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
@@ -609,7 +612,7 @@ void TG200::genEventsQA(TRandom3* fRandom){
         TH2D *v3_P_h5 = new TH2D("v3_P_h5" , "v_{3} vs p_{T} for p^{+}, p^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v4_P_h5 = new TH2D("v4_P_h5" , "v_{4} vs p_{T} for p^{+}, p^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
 
-        nEvent = 1000000;
+        nEvent = 2500000;
        
         for(int i=0; i< 4; i++){
             setCent = i;
@@ -782,7 +785,7 @@ void TG200::genEventsQA(TRandom3* fRandom){
 
 
             }
-           clearQABuffer();
+           clearDistroBuffer();
         }
 
         histpsi_1->Write();
@@ -870,12 +873,11 @@ void TG200::genEventsQA(TRandom3* fRandom){
         v4_P_h5->Write(); 
         
         myFile->Close();
-        qa->Close();      
-        
+        qa->Close();    
+               
 
 
 }
-
 void TG200::getRootDistros(){
 
         ptHistoPip = "pi+_pt_cent"+std::to_string(setCent);
@@ -895,7 +897,4 @@ void TG200::getRootDistros(){
 
 
 }
-
-
-
 TENNGEN_END_NAMESPACE
