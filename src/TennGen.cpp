@@ -580,8 +580,11 @@ void TG200::genEvents(){
                     v2 = doV2*HarmonicFunction(0);
                     v3 = doV3*HarmonicFunction(1);
                     v4 = doV4*HarmonicFunction(2);
+                    if(v2<0.0) v2=0.0;
+                    if(v3<0.0) v3=0.0;
+                    if(v4<0.0) v4=0.0;
                     v1 = doV1*0.02*v2;
-                   
+                    
                     maxPhi = 2.0*(1.02*abs(v2)+abs(v3)+abs(v4))/M_PI;
                     
                     CHECK =0;
@@ -778,6 +781,9 @@ void TG200::genEventsQA(){
                                 v2 = doV2*HarmonicFunction(0);
                                 v3 = doV3*HarmonicFunction(1);
                                 v4 = doV4*HarmonicFunction(2);
+                                if(v2<0.0) v2=0.0;
+                                if(v3<0.0) v3=0.0;
+                                if(v4<0.0) v4=0.0;
                                 v1 = doV1*0.02*v2;
 
                                 if(KF==211||KF==-211){
