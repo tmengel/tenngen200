@@ -715,5 +715,4 @@ tmp/TennGen.o: src/TennGen.cpp /usr/include/stdc-predef.h \
  /usr/include/asm-generic/posix_types.h \
  /usr/include/x86_64-linux-gnu/bits/statx-generic.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_statx_timestamp.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h \
- //home/tmengel/root/include/TKey.h //home/tmengel/root/include/TClass.h
+ /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h

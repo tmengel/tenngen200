@@ -19,6 +19,9 @@
 #include "TImage.h"
 #include "TRandom3.h"
 #include "TDirectory.h"
+#include "TROOT.h"
+#include "Riostream.h"
+#include <TSystem.h>
 
 
 #include "TROOT.h"

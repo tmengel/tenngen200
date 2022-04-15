@@ -3,145 +3,244 @@
 #include <iostream>
 #include <sys/stat.h>
 #include <sys/types.h>
-#include "TImage.h"
-#include "TKey.h"
-#include "TROOT.h"
-#include "Riostream.h"
-#include <TSystem.h>
-#include "TClass.h"
-#include "TF1.h"
-#include "TH2.h"
+
 TENNGEN_BEGIN_NAMESPACE
 
 void TennGen::init(){
+  dir = settings.getOutputDir(); 
 
-  if(!settings.qamode()){
-  std::cout << "======================================="<<std::endl;
-  std::cout << "TennGen Settings: "  << std::endl ;
-  std::cout << "======================================="<<std::endl;
-  std::cout << "collison energy: " << settings.getCollEn() <<std::endl;
-  std::cout << "nEvents: " << settings.getNevents() << std::endl;
-  std::cout << "Cent: " << settings.getCentBin() << std::endl;
-  std::cout << "Eta: " << settings.getEtaRange() << std::endl;
-
-  if(settings.getVN(1) == 1) std::cout << "v1: On " <<  std::endl;
-  if(settings.getVN(1) == 0) std::cout << "v1: Off " <<  std::endl;
-
-  if(settings.getVN(2) == 1) std::cout << "v2: On " <<  std::endl;
-  if(settings.getVN(2) == 0) std::cout << "v2: Off " <<  std::endl;
-
-  if(settings.getVN(3) == 1) std::cout << "v3: On " <<  std::endl;
-  if(settings.getVN(3) == 0) std::cout << "v3: Off " <<  std::endl;
-
-  if(settings.getVN(4) == 1) std::cout << "v4: On " <<  std::endl;
-  if(settings.getVN(4) == 0) std::cout << "v4: Off " <<  std::endl;
-
-  if(settings.getCollEn()==5020){
-  if(settings.getVN(5) == 1) std::cout << "v5: On " <<  std::endl;
-  if(settings.getVN(5) == 0) std::cout << "v5: Off " <<  std::endl;
-  }
-  
-  if(settings.getPsiN(1) == -1.0)  std::cout << "psi1: Random" << std::endl;
-  if(settings.getPsiN(1) != -1.0)  std::cout << "psi1: " << settings.getPsiN(1) << std::endl;
-
-  if(settings.getPsiN(2) == -1.0)  std::cout << "psi2: Random" << std::endl;
-  if(settings.getPsiN(2) != -1.0)  std::cout << "psi2: " << settings.getPsiN(2) << std::endl;
-
-  if(settings.getPsiN(3) == -1.0)  std::cout << "psi3: Random" << std::endl;
-  if(settings.getPsiN(3) != -1.0)  std::cout << "psi3: " << settings.getPsiN(3) << std::endl;
-
-  if(settings.getPsiN(4) == -1.0)  std::cout << "psi4: Random" << std::endl;
-  if(settings.getPsiN(4) != -1.0)  std::cout << "psi4: " << settings.getPsiN(4) << std::endl;
-
-  if(settings.getCollEn()==5020){
-  if(settings.getPsiN(5) == -1.0)  std::cout << "psi5: Random" << std::endl;
-  if(settings.getPsiN(5) != -1.0)  std::cout << "psi5: " << settings.getPsiN(5) << std::endl;
-  }
-
-  std::cout << "OutDir: " << settings.getOutputDir() << std::endl;
-
-  if(settings.getHistos()) std::cout << "QA: true "<< std::endl;
-  if(!settings.getHistos()) std::cout << "QA: false "<< std::endl;
-
-
-  if(settings.getTTree()) std::cout << "TTree: true "<< std::endl;
-  if(!settings.getTTree()) std::cout << "TTree: false "<< std::endl;
-
-  std::cout<< "======================================="<<std::endl;
-  std::cout<< "======================================="<<std::endl;
-  }
-  if(settings.qamode()){
-        std::cout << "======================================="<<std::endl;
-        std::cout << "Running TennGen QA "  << std::endl ;
-        std::cout << "======================================="<<std::endl;
-        std::cout << "collison energy: " << settings.getCollEn() <<std::endl;
-        std::cout << "nEvents: 10000000"  << std::endl;
-        std::cout << "Cent: ALL" << std::endl;
-        std::cout << "Eta: " << settings.getEtaRange() << std::endl;
-
-  }
-
-  string dir = settings.getOutputDir();
-  
   if (mkdir(dir.c_str(), 0777) == -1) std::cerr << "Output " << strerror(errno) << endl;
+        
+  settings.setOutputDir(settings.getOutputDir()+"/");   
 
+  if(settings.batchmode()) runBatch();
   
+  if(settings.qamode()) runQA();
+
+  if(settings.streammode()) runStream();
+
+  std::cout << "======================================="<<std::endl;
+  std::cout << "======================================="<<std::endl;
+                        
+}
+void TennGen::runBatch(){
+        if(settings.batchmode()){
+
+                std::cout << "======================================="<<std::endl;
+                std::cout << "TennGen Settings: BATCH MODE "  << std::endl ;
+                std::cout << "======================================="<<std::endl;
+                std::cout << "collison energy: " << settings.getCollEn() <<std::endl;
+                std::cout << "nEvents: " << settings.getNevents() << std::endl;
+                std::cout << "Cent: " << settings.getCentBin() << std::endl;
+                std::cout << "Eta: " << settings.getEtaRange() << std::endl;
+
+                if(settings.getVN(1) == 1) std::cout << "v1: On " <<  std::endl;
+                if(settings.getVN(1) == 0) std::cout << "v1: Off " <<  std::endl;
+
+                if(settings.getVN(2) == 1) std::cout << "v2: On " <<  std::endl;
+                if(settings.getVN(2) == 0) std::cout << "v2: Off " <<  std::endl;
+
+                if(settings.getVN(3) == 1) std::cout << "v3: On " <<  std::endl;
+                if(settings.getVN(3) == 0) std::cout << "v3: Off " <<  std::endl;
+
+                if(settings.getVN(4) == 1) std::cout << "v4: On " <<  std::endl;
+                if(settings.getVN(4) == 0) std::cout << "v4: Off " <<  std::endl;
+
+                if(settings.getCollEn()==5020){
+                        if(settings.getVN(5) == 1) std::cout << "v5: On " <<  std::endl;
+                        if(settings.getVN(5) == 0) std::cout << "v5: Off " <<  std::endl;
+                }
+                
+                if(settings.getPsiN(1) == -1.0)  std::cout << "psi1: Random" << std::endl;
+                if(settings.getPsiN(1) != -1.0)  std::cout << "psi1: " << settings.getPsiN(1) << std::endl;
+
+                if(settings.getPsiN(2) == -1.0)  std::cout << "psi2: Random" << std::endl;
+                if(settings.getPsiN(2) != -1.0)  std::cout << "psi2: " << settings.getPsiN(2) << std::endl;
+
+                if(settings.getPsiN(3) == -1.0)  std::cout << "psi3: Random" << std::endl;
+                if(settings.getPsiN(3) != -1.0)  std::cout << "psi3: " << settings.getPsiN(3) << std::endl;
+
+                if(settings.getPsiN(4) == -1.0)  std::cout << "psi4: Random" << std::endl;
+                if(settings.getPsiN(4) != -1.0)  std::cout << "psi4: " << settings.getPsiN(4) << std::endl;
+
+                if(settings.getCollEn()==5020){
+                        if(settings.getPsiN(5) == -1.0)  std::cout << "psi5: Random" << std::endl;
+                        if(settings.getPsiN(5) != -1.0)  std::cout << "psi5: " << settings.getPsiN(5) << std::endl;
+                }
+
+                std::cout << "OutDir: " << settings.getOutputDir() << std::endl;
+
+                if(settings.getHistos()) std::cout << "Histos: true "<< std::endl;
+                if(!settings.getHistos()) std::cout << "Histos: false "<< std::endl;
+
+
+                if(settings.getTTree()) std::cout << "TTree: true "<< std::endl;
+                if(!settings.getTTree()) std::cout << "TTree: false "<< std::endl;
+
+                std::cout<< "======================================="<<std::endl;
+                std::cout<< "======================================="<<std::endl;
+
+                if(settings.getNevents()>50000){
+
+                        int lastbatch = settings.getNevents()%50000;
+                        int numbatches = (settings.getNevents()-lastbatch)/50000;
+                        int filelabel;
+                        if(lastbatch !=0) filelabel = numbatches+1;
+                        else filelabel = numbatches;
+                        TGSettings TempParams = settings;
+                        TempParams.setNevents(50000);
+                        if(settings.getCollEn()==200){
+                                tg.config(TempParams);
+                                tg.seed(fRandom);
+                        }
+
+                        for(int k =0; k< (numbatches);k++){
+
+                                TempParams.setOutputDir(settings.getOutputDir()+std::to_string(k)+"_of_"+std::to_string(filelabel)+"_");
+                               // tFileHistos=TempParams.getOutputDir()+"TG_"+std::to_string(TempParams.getNevents())+"_eta"+std::to_string(settings.getEtaRange())+"_"+"Cent"+std::to_string(settings.getCentBin())+"_"+std::to_string(settings.getVN(1))+std::to_string(settings.getVN(2))+std::to_string(settings.getVN(3))+std::to_string(settings.getVN(4))+"_Histos.root";
+                                //tFileTree=TempParams.getOutputDir()+"TG_"+std::to_string(TempParams.getNevents())+"_eta"+std::to_string(settings.getEtaRange())+"_"+"Cent"+std::to_string(settings.getCentBin())+"_"+std::to_string(settings.getVN(1))+std::to_string(settings.getVN(2))+std::to_string(settings.getVN(3))+std::to_string(settings.getVN(4))+"_TTree.root";
+
+                                std::cout << "OutDir(s): " << TempParams.getOutputDir() << std::endl;
+                                if(settings.getCollEn()==200) TG200 tgBatch(TempParams, fRandom);
+                               
+                                //if(settings.getCollEn()==5020) TG5020 tg(TempParams,fRandom);
+                              
+                                
+                                std::cout << "Event " << (k+1)*50000 << " of " << settings.getNevents() << " completed" <<std::endl;
+                                //events.clear();
+
+                        }
+
+                        if(lastbatch!=0){
+                                TempParams.setNevents(lastbatch);
+                                TempParams.setOutputDir(settings.getOutputDir()+std::to_string(numbatches+1)+"_of_"+std::to_string(filelabel)+"_");
+                                tFileHistos=TempParams.getOutputDir()+"TG_"+std::to_string(TempParams.getNevents())+"_eta"+std::to_string(settings.getEtaRange())+"_"+"Cent"+std::to_string(settings.getCentBin())+"_"+std::to_string(settings.getVN(1))+std::to_string(settings.getVN(2))+std::to_string(settings.getVN(3))+std::to_string(settings.getVN(4))+"_Histos.root";
+                                tFileTree=TempParams.getOutputDir()+"TG_"+std::to_string(TempParams.getNevents())+"_eta"+std::to_string(settings.getEtaRange())+"_"+"Cent"+std::to_string(settings.getCentBin())+"_"+std::to_string(settings.getVN(1))+std::to_string(settings.getVN(2))+std::to_string(settings.getVN(3))+std::to_string(settings.getVN(4))+"_TTree.root";
+                                if(settings.getCollEn()==200) TG200 tgBatch(TempParams, fRandom);
+                                
+                                //if(settings.getCollEn()==5020) TG5020 tg(TempParams,fRandom);
+                                //std::cout << "OutDir(s): " << TempParams.getOutputDir() << std::endl;
+                
+                                std::cout << "Event " << events.size() << " of " << settings.getNevents() << " completed" <<std::endl;
+                        }
+               
+
+                }
+                else{
+                
+                        if(settings.getCollEn()==200){
+                                TG200 tgBatch(settings, fRandom);
+                                events = tgBatch.events();
+                        } 
+                        // if(settings.getCollEn()==5020) TG5020 tg(TempParams,fRandom);
+                        std::cout << "Event "<< events.size() << " completed." << std::endl;
+                        std::cout << "======================================="<<std::endl;
+                        tFileHistos=settings.getOutputDir()+"TG_"+std::to_string(settings.getNevents())+"_eta"+std::to_string(settings.getEtaRange())+"_"+"Cent"+std::to_string(settings.getCentBin())+"_"+std::to_string(settings.getVN(1))+std::to_string(settings.getVN(2))+std::to_string(settings.getVN(3))+std::to_string(settings.getVN(4))+"_Histos.root";
+                        tFileTree=settings.getOutputDir()+"TG_"+std::to_string(settings.getNevents())+"_eta"+std::to_string(settings.getEtaRange())+"_"+"Cent"+std::to_string(settings.getCentBin())+"_"+std::to_string(settings.getVN(1))+std::to_string(settings.getVN(2))+std::to_string(settings.getVN(3))+std::to_string(settings.getVN(4))+"_TTree.root";
+                        //events.clear();
   
-        if(settings.getNevents()>50000){
-
-        int lastbatch = settings.getNevents()%50000;
-        int numbatches = (settings.getNevents()-lastbatch)/50000;
-        int filelabel;
-        if(lastbatch !=0) filelabel = numbatches+1;
-        else filelabel = numbatches;
-        TGSettings TempParams = settings;
-        TempParams.setNevents(50000);
-
-        std::cout << "Seperatating batches: "  << std::endl ;
-
-        std::cout << "N 50K batches: "  << numbatches <<std::endl ;
-        if(lastbatch!=0) std::cout << "Size of last batch "  << lastbatch <<std::endl ;
-        std::cout << "======================================="<<std::endl;
-
-        for(int k =0; k< (numbatches);k++){
-
-                TempParams.setOutputDir(settings.getOutputDir()+"/"+std::to_string(k)+"_of_"+std::to_string(filelabel)+"_");
-                //std::cout << "OutDir(s): " << TempParams.getOutputDir() << std::endl;
-                if(settings.getCollEn()==200) TG200 tg(TempParams,fRandom);
-                //if(settings.getCollEn()==5020) TG5020 tg(TempParams,fRandom);
-
-                std::cout << "Event " << (k+1)*50000 << " of " << settings.getNevents() << " completed" <<std::endl;
+                }
 
         }
+        else {cout<<"ERROR TENNGEN NOT IN STREAM MODE"<<endl;}
+}
+void TennGen::runQA(){
+        if(settings.qamode()){
+                std::cout << "======================================="<<std::endl;
+                std::cout << "Running TennGen QA "  << std::endl ;
+                std::cout << "======================================="<<std::endl;
+                std::cout << "collison energy: " << settings.getCollEn() <<std::endl;
+                std::cout << "nEvents: 10000000"  << std::endl;
+                std::cout << "Cent: ALL" << std::endl;
+                std::cout << "Eta: " << settings.getEtaRange() << std::endl;
 
-        if(lastbatch!=0){
-                TempParams.setNevents(lastbatch);
-                TempParams.setOutputDir(settings.getOutputDir()+"/"+std::to_string(numbatches+1)+"_of_"+std::to_string(filelabel)+"_");
-                if(settings.getCollEn()==200) TG200 tg(TempParams,fRandom);
-                //if(settings.getCollEn()==5020) TG5020 tg(TempParams,fRandom);
-                //std::cout << "OutDir(s): " << TempParams.getOutputDir() << std::endl;
-                std::cout << "Event " << settings.getNevents() << " of " << settings.getNevents() << " completed" <<std::endl;
-        }
-        std::cout << "======================================="<<std::endl;
-        std::cout << "======================================="<<std::endl;
-
+                TG200 tgQA(settings, fRandom);
 
         }
-        else{
-        settings.setOutputDir(settings.getOutputDir()+"/");
-        if(settings.getCollEn()==200){
-                TG200 tg(settings,fRandom);
-                events = tg.events();   
-        } 
-        // if(settings.getCollEn()==5020) TG5020 tg(TempParams,fRandom);
-        std::cout << "Event "<< events.size() << " completed." << std::endl;
-        std::cout << "======================================="<<std::endl;
+        else {cout<<"ERROR TENNGEN NOT IN QA MODE"<<endl;}
+}
+void TennGen::runStream(){
+
+        if(settings.streammode()){
+                std::cout << "======================================="<<std::endl;
+                std::cout << "TennGen Settings: STREAMING "  << std::endl ;
+                std::cout << "======================================="<<std::endl;
+                std::cout << "collison energy: " << settings.getCollEn() <<std::endl;
+                std::cout << "nEvents: " << settings.getNevents() << std::endl;
+                std::cout << "Cent: " << settings.getCentBin() << std::endl;
+                std::cout << "Eta: " << settings.getEtaRange() << std::endl;
+
+                if(settings.getVN(1) == 1) std::cout << "v1: On " <<  std::endl;
+                if(settings.getVN(1) == 0) std::cout << "v1: Off " <<  std::endl;
+
+                if(settings.getVN(2) == 1) std::cout << "v2: On " <<  std::endl;
+                if(settings.getVN(2) == 0) std::cout << "v2: Off " <<  std::endl;
+
+                if(settings.getVN(3) == 1) std::cout << "v3: On " <<  std::endl;
+                if(settings.getVN(3) == 0) std::cout << "v3: Off " <<  std::endl;
+
+                if(settings.getVN(4) == 1) std::cout << "v4: On " <<  std::endl;
+                if(settings.getVN(4) == 0) std::cout << "v4: Off " <<  std::endl;
+
+                if(settings.getCollEn()==5020){
+                        if(settings.getVN(5) == 1) std::cout << "v5: On " <<  std::endl;
+                        if(settings.getVN(5) == 0) std::cout << "v5: Off " <<  std::endl;
+                }
+                
+                if(settings.getPsiN(1) == -1.0)  std::cout << "psi1: Random" << std::endl;
+                if(settings.getPsiN(1) != -1.0)  std::cout << "psi1: " << settings.getPsiN(1) << std::endl;
+
+                if(settings.getPsiN(2) == -1.0)  std::cout << "psi2: Random" << std::endl;
+                if(settings.getPsiN(2) != -1.0)  std::cout << "psi2: " << settings.getPsiN(2) << std::endl;
+
+                if(settings.getPsiN(3) == -1.0)  std::cout << "psi3: Random" << std::endl;
+                if(settings.getPsiN(3) != -1.0)  std::cout << "psi3: " << settings.getPsiN(3) << std::endl;
+
+                if(settings.getPsiN(4) == -1.0)  std::cout << "psi4: Random" << std::endl;
+                if(settings.getPsiN(4) != -1.0)  std::cout << "psi4: " << settings.getPsiN(4) << std::endl;
+
+                if(settings.getCollEn()==5020){
+                        if(settings.getPsiN(5) == -1.0)  std::cout << "psi5: Random" << std::endl;
+                        if(settings.getPsiN(5) != -1.0)  std::cout << "psi5: " << settings.getPsiN(5) << std::endl;
+                }
+                TGSettings TempParams = settings;
+                TempParams.setNevents(50000);
+                if(settings.getCollEn()==200){
+                                tg.config(TempParams);
+                                tg.seed(fRandom);
+                                tg.genEvents();
+                } 
+                STREAMING = true;
+                StreamInt =0;
+                
+
         }
-  
- 
+        else {cout<<"ERROR TENNGEN NOT IN STREAM MODE"<<endl;}
 
 }
+TGEvent& TennGen::next(){
+        if(STREAMING){
+                if(StreamInt == 49999){
+                        tg.genEvents();
+                        StreamInt = 0;
+                }
+                StreamInt++;
+                return tg[StreamInt-1];
+        }
+        else{
+                settings.setStream(true);
+                runStream();
+                if(StreamInt == 49999){
+                        tg.genEvents();
+                        StreamInt = 0;
+                }
+                StreamInt++;
+                return tg[StreamInt-1];
+        }
 
+
+
+}
 const int TG200::raw_high[]={608,430,311,145};
 const int TG200::raw_low[]={431,312,146,56};
 const int TG200::raw_bin[]= {177,118,165,89};
@@ -418,8 +517,9 @@ void TG200::clearDistroBuffer(){
         delete ptDistroPbar;
         delete MultiDistro;
 }
-void TG200::genEvents(TRandom3* fRandom){
+void TG200::genEvents(){
 
+        tgEvents.clear();
         while(tgEvents.size()!=settings.getNevents()){ 
             
             
@@ -503,9 +603,9 @@ void TG200::genEvents(TRandom3* fRandom){
         
 
         }
-        myFile->Close();
+        //myFile->Close();
 }
-void TG200::genEventsQA(TRandom3* fRandom){
+void TG200::genEventsQA(){
         
         string qaString = settings.getOutputDir()+"TG_200GeVQA.root";
         TFile *qa = new TFile(qaString.c_str(),"RECREATE");
@@ -895,6 +995,43 @@ void TG200::getRootDistros(){
         ptDistroPbar = (TH1F*)myFile->Get(ptHistoPbar.c_str());
         MultiDistro = (TH1F*)myFile->Get("MultiplicityDistro");
 
+
+}
+void TG200::config(TGSettings inputSettings) {
+
+        settings = inputSettings;
+        tgEvents.clear();
+        clearEventBuffer();
+       // clearDistroBuffer();
+
+        doPsi1 = 0;
+        doPsi2 = 0;
+        doPsi3 = 0;
+        doPsi4 = 0;
+
+        nEvent = settings.getNevents();
+        etaRange = settings.getEtaRange();
+        setCent = settings.getCentBin();
+        doV1 = settings.getVN(1);
+        doV2 = settings.getVN(2);
+        doV3 = settings.getVN(3);
+        doV4 = settings.getVN(4);
+
+        psi1 = settings.getPsiN(1);
+        if(psi1 ==-1.0 ) doPsi1 = -1.0;
+        psi2 = settings.getPsiN(2);
+        if(psi2 ==-1.0 ) doPsi2 = -1.0;
+        psi3 = settings.getPsiN(3);
+        if(psi3 ==-1.0 ) doPsi3 = -1.0;
+        psi4 = settings.getPsiN(4);
+        if(psi4 ==-1.0 ) doPsi4 = -1.0;
+
+        getRootDistros();
+
+
+}
+void TG200::seed(TRandom3* FRandom){
+        fRandom = FRandom;
 
 }
 TENNGEN_END_NAMESPACE

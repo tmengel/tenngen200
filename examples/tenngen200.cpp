@@ -11,8 +11,8 @@ int main(){
     TennGen tg;
 
     tg.setcollen(200);
-    tg.setnevent(1000);
-    tg.setcent(1); // 0-10%
+    tg.setnevent(100000);
+    tg.setcent(0); // 0-10%
     tg.seteta(1.1); // abs value between 0 and 1.1
 
     tg.setvN(1,true);
@@ -24,9 +24,16 @@ int main(){
     tg.setpsiN(2,0.0);
     tg.setpsiN(3,-1.0);
     tg.setpsiN(4,0.0);
-    //tg.setOutputDir("output-200");
-    //tg.do_QA(true);
-    //tg.init();
+    tg.setOutputDir("output-200");
+
+    tg.do_Histos(true); // will make debug root plots
+    tg.do_TTree(true); // will make TTree 
+    tg.set_Batch(false);
+    tg.set_QA(false);
+    tg.set_Stream(true);
+    tg.init();
+
+
 
     
     //tg.do_Histos(true); // will make debug root plots
@@ -36,10 +43,8 @@ int main(){
     //tg.defaultSettings200(true);
 
      
-    // cout << "Multiplicity |Eta| centralitiy \n";
-    // cout << tg[999] << endl; 
-    // cout << "particles: pt eta phi kf" <<endl;
-    // for(int j =0; j < tg[999].size(); j++){ cout << "\t" << tg[999][j] << endl;  }
+    cout << "Multiplicity |Eta| centralitiy \n";
+    for(int j =0; j < 100000; j++){ cout << j << "\t" << tg.next() << endl;  }
 
 
     return 0;

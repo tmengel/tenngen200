@@ -4,6 +4,8 @@
 #include "TGParticle.h"
 #include "TGEvent.h"
 
+
+
 TENNGEN_BEGIN_NAMESPACE
 
 class TGSettings;
@@ -20,6 +22,8 @@ private:
     std::string outDirectory;
     bool dottree;
     bool QA;
+    bool Batch;
+    bool Stream;
 
 public:
 
@@ -44,7 +48,10 @@ public:
 
         Histos = true;
         dottree= true;
+        Batch = true;
         QA = false;
+        Stream = false;
+        
 
         outDirectory = "./";
     }
@@ -59,6 +66,8 @@ public:
     bool getHistos(){return Histos;}
     bool getTTree(){return dottree; }
     bool qamode(){return QA;}
+    bool batchmode(){return Batch;}
+    bool streammode(){return Stream;}
 
 
 
@@ -85,130 +94,33 @@ public:
     void setOutputDir(std::string outDir){outDirectory  = outDir;}
     void doHistos(bool userInput){Histos = userInput;}
     void doTTree(bool userInput){dottree = userInput;}
-    void doQA(bool userInput){
+    void setQA(bool userInput){
         QA = userInput;
+        if(userInput){
         Histos = false;
         dottree = false;
+        Batch = false; 
+        Stream = false;
         }
+    }
+     void setBatch(bool userInput){
+        Batch = userInput;
+        if(userInput){
+        QA = false; 
+        Stream = false;
+        }
+     }
+     void setStream(bool userInput){
+        Stream = userInput;
+        if(userInput){
+        Histos = false;
+        dottree = false;
+        QA = false; 
+        Batch = false;
+        }
+    }
 
 };
-
-class TennGen{
-private:
-
-    friend class TGSettings;
-    friend class TG200;
-    TGSettings settings;
-    TGEventList events;
-    TRandom3* fRandom;
-
-
-public:
-
-    ~TennGen() {};
-    TennGen(const int collEn = 200, const int setEvents = 1000, const int setCent = 0, const float setEta =1.1, const int doV1=1, const int doV2=1,const int doV3=1,const int doV4=1,const int doV5 =1) {
-        
-        events.clear();
-        settings.setCollEn(collEn);
-        settings.setNevents(setEvents);
-        settings.setCentBin(setCent);
-        settings.setEtaRange(setEta);
-
-        if(doV1 ==0) settings.setVN(1,false);
-        if(doV2 ==0) settings.setVN(2,false);
-        if(doV3 ==0) settings.setVN(3,false);
-        if(doV4 ==0) settings.setVN(4,false);
-        if(collEn == 5020){
-            if(doV5 ==0) settings.setVN(5,false);
-        }
-
-        fRandom = new TRandom3();     
-    }
-    
-
-    void setcollen(int collen){ settings.setCollEn(collen);}
-    void setnevent(int numevents){ settings.setNevents(numevents);}
-    void setcent(int cent){settings.setCentBin(cent);}
-    void seteta(float absEta){settings.setEtaRange(absEta);}
-    
-    void setvN(int n, bool On){ settings.setVN(n,On); }
-    void setpsiN(int n, float userPsi){ settings.setPsiN(n,userPsi); }
-    
-    void do_Histos(bool userIn){settings.doHistos(userIn);}
-    void do_TTree(bool userIn){settings.doTTree(userIn);}
-    void do_QA(bool userIn){settings.doQA(userIn);}
-    
-    void setOutputDir(std::string outDir){ settings.setOutputDir(outDir); }
-
-    void defaultSettings200(bool userIn){
-
-        if(userIn){
-        settings.setCollEn(200);
-        settings.setNevents(1000);
-        settings.setCentBin(0);
-        settings.setEtaRange(1.1);
-
-        settings.setVN(1,true);
-        settings.setVN(2,true);
-        settings.setVN(3,true);
-        settings.setVN(4,true);
-        settings.setVN(5,false);
-
-        settings.setPsiN(1,-1.0);
-        settings.setPsiN(2,0.0);
-        settings.setPsiN(3,-1.0);
-        settings.setPsiN(4,0.0);
-
-
-        settings.setOutputDir("./");
-
-        settings.doHistos(true);
-        settings.doTTree(true);
-        settings.doQA(false);
-        }
-
-    }
-    void defaultSettings5020(bool userIn){
-
-        if(userIn){
-        settings.setCollEn(5020);
-        settings.setNevents(1000);
-        settings.setCentBin(0);
-        settings.setEtaRange(0.9);
-
-        settings.setVN(1,true);
-        settings.setVN(2,true);
-        settings.setVN(3,true);
-        settings.setVN(4,true);
-        settings.setVN(5,true);
-
-        settings.setPsiN(1,-1.0);
-        settings.setPsiN(2,0.0);
-        settings.setPsiN(3,-1.0);
-        settings.setPsiN(4,0.0);
-        settings.setPsiN(5,-1.0);
-
-        settings.setOutputDir("./");
-
-        settings.doHistos(true);
-        settings.doTTree(true);
-        settings.doQA(false);
-        }
-
-    }
-
-
-    void init();
-
-
-    TGEvent& operator[](int i) {return events[i];}
-    const TGEvent& operator[](int i) const {return events[i];}
-    TGEvent& at(int i) {return events[i];}
-    int size(){return events.size();}
-
- 
-};
-
 class TG200{
 private:
     const static int raw_high[4];
@@ -245,6 +157,7 @@ private:
     int partNumbers[6];
 
     TFile* myFile = new TFile("AuAu200Data.root");
+
     TH1F* ptDistroPip;
     TH1F* ptDistroPim;
     TH1F* ptDistroKap;
@@ -263,15 +176,22 @@ private:
     string tFileTree;
 
 
-
+    TRandom3* fRandom;
 
 public:
     ~TG200() {};
-    TG200(TGSettings inputSettings, TRandom3* fRandom) : settings(inputSettings){
+    TG200() {     
+        tgEvents.clear();
+        clearEventBuffer();
+        doPsi1 = 0;
+        doPsi2 = 0;
+        doPsi3 = 0;
+        doPsi4 = 0;
+    }
+    TG200(TGSettings inputSettings, TRandom3* FRandom) : settings(inputSettings) , fRandom(FRandom) {
         
 
         tgEvents.clear();
-
         doPsi1 = 0;
         doPsi2 = 0;
         doPsi3 = 0;
@@ -296,8 +216,8 @@ public:
         
         getRootDistros();
         
-        if(!settings.qamode()){genEvents(fRandom);}
-        if(settings.qamode()){genEventsQA(fRandom);}
+        if(!settings.qamode()){genEvents();}
+        if(settings.qamode()){genEventsQA();}
 
         tFileHistos=settings.getOutputDir()+"TG_"+std::to_string(nEvent)+"_eta"+std::to_string(etaRange)+"_"+"Cent"+std::to_string(setCent)+"_"+std::to_string(doV1)+std::to_string(doV2)+std::to_string(doV3)+std::to_string(doV4)+"_Histos.root";
         tFileTree=settings.getOutputDir()+"TG_"+std::to_string(nEvent)+"_eta"+std::to_string(etaRange)+"_"+"Cent"+std::to_string(setCent)+"_"+std::to_string(doV1)+std::to_string(doV2)+std::to_string(doV3)+std::to_string(doV4)+"_TTree.root";
@@ -308,13 +228,17 @@ public:
     
 
     }
-    void streamGen(TGSettings inputSettings, TRandom3* fRandom);
+   
     TGEventList events(){return tgEvents;}
     TGEvent& operator[](int i) {return tgEvents[i];}
     const TGEvent& operator[](int i) const {return tgEvents[i];}
     TGEvent& at(int i) {return tgEvents[i];}
-    void genEvents(TRandom3* fRandom);
-    void genEventsQA(TRandom3* fRandom);
+    int size(){return tgEvents.size();}
+
+    void config(TGSettings inputSettings);
+    void seed(TRandom3* FRandom);
+    void genEvents();
+    void genEventsQA();
     void getRootDistros();
     void clearDistroBuffer();
     void clearEventBuffer();
@@ -326,6 +250,142 @@ public:
     
 
 };
+
+class TennGen{
+private:
+
+    friend class TGSettings;
+    friend class TG200;
+    TGSettings settings;
+    TGEventList events;
+    TRandom3* fRandom;
+    TG200 tg;
+    bool STREAMING;
+    int StreamInt;
+
+    string tFileHistos;
+    string tFileTree;
+    string dir;
+  
+
+
+public:
+
+    ~TennGen() {};
+    TennGen(const int collEn = 200, const int setEvents = 1000, const int setCent = 0, const float setEta =1.1, const int doV1=1, const int doV2=1,const int doV3=1,const int doV4=1,const int doV5 =1) {
+        
+        events.clear();
+        settings.setCollEn(collEn);
+        settings.setNevents(setEvents);
+        settings.setCentBin(setCent);
+        settings.setEtaRange(setEta);
+
+        if(doV1 ==0) settings.setVN(1,false);
+        if(doV2 ==0) settings.setVN(2,false);
+        if(doV3 ==0) settings.setVN(3,false);
+        if(doV4 ==0) settings.setVN(4,false);
+        if(collEn == 5020){
+            if(doV5 ==0) settings.setVN(5,false);
+        }
+
+        fRandom = new TRandom3(); 
+        settings.setBatch(true);
+       
+    }
+    
+
+    void setcollen(int collen){ settings.setCollEn(collen);}
+    void setnevent(int numevents){ settings.setNevents(numevents);}
+    void setcent(int cent){settings.setCentBin(cent);}
+    void seteta(float absEta){settings.setEtaRange(absEta);}
+    
+    void setvN(int n, bool On){ settings.setVN(n,On); }
+    void setpsiN(int n, float userPsi){ settings.setPsiN(n,userPsi); }
+    
+    void do_Histos(bool userIn){settings.doHistos(userIn);}
+    void do_TTree(bool userIn){settings.doTTree(userIn);}
+    void set_QA(bool userIn){settings.setQA(userIn);}
+    void set_Batch(bool userIn){settings.setBatch(userIn);}
+    void set_Stream(bool userIn){settings.setStream(userIn);}
+    
+    void setOutputDir(std::string outDir){ settings.setOutputDir(outDir); }
+
+    void defaultSettings200(bool userIn){
+
+        if(userIn){
+        settings.setCollEn(200);
+        settings.setNevents(1000);
+        settings.setCentBin(0);
+        settings.setEtaRange(1.1);
+
+        settings.setVN(1,true);
+        settings.setVN(2,true);
+        settings.setVN(3,true);
+        settings.setVN(4,true);
+        settings.setVN(5,false);
+
+        settings.setPsiN(1,-1.0);
+        settings.setPsiN(2,0.0);
+        settings.setPsiN(3,-1.0);
+        settings.setPsiN(4,0.0);
+
+
+        settings.setOutputDir("./");
+
+        settings.doHistos(true);
+        settings.doTTree(true);
+        settings.setQA(false);
+        settings.setBatch(true);
+        }
+
+    }
+    void defaultSettings5020(bool userIn){
+
+        if(userIn){
+        settings.setCollEn(5020);
+        settings.setNevents(1000);
+        settings.setCentBin(0);
+        settings.setEtaRange(0.9);
+
+        settings.setVN(1,true);
+        settings.setVN(2,true);
+        settings.setVN(3,true);
+        settings.setVN(4,true);
+        settings.setVN(5,true);
+
+        settings.setPsiN(1,-1.0);
+        settings.setPsiN(2,0.0);
+        settings.setPsiN(3,-1.0);
+        settings.setPsiN(4,0.0);
+        settings.setPsiN(5,-1.0);
+
+        settings.setOutputDir("./");
+
+        settings.doHistos(true);
+        settings.doTTree(true);
+        settings.setQA(false);
+        settings.setBatch(true);
+        }
+
+    }
+
+
+    void init();
+    void runBatch();
+    void runQA();
+    void runStream();
+
+    TGEvent& next();
+
+
+    TGEvent& operator[](int i) {return events[i];}
+    const TGEvent& operator[](int i) const {return events[i];}
+    TGEvent& at(int i) {return events[i];}
+    int size(){return events.size();}
+
+ 
+};
+
 
 
 
