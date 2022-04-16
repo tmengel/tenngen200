@@ -23,10 +23,10 @@
 #include "Riostream.h"
 #include <TSystem.h>
 
+#include <bits/stdc++.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
-#include "TROOT.h"
-#include "Riostream.h"
-#include <TSystem.h>
 
 #ifndef M_PI
 #define M_PI 3.1415926535897932385

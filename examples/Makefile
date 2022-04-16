@@ -17,6 +17,7 @@ endif
 CXX_COMMON:=-I$(PREFIX_INCLUDE) $(CXX_COMMON) $(GZIP_LIB)
 CXX_COMMON+= -L$(PREFIX_LIB) -Wl,-rpath,$(PREFIX_LIB) -ltenngen200 -ldl
 TENNGEN=$(PREFIX_LIB)/libtenngen200$(LIB_SUFFIX)
+CXX_PYTHIA= $(PYTHIA8_INCLUDE) $(PYTHIA8_LIB) -lpythia8 -ldl
 
 ################################################################################
 # RULES: Definition of the rules used to build the TENNGEN examples.
@@ -45,9 +46,9 @@ tenngen-200: $(TENNGEN) $(AUAU200) tenngen200.cpp
 tenngen-5020: $(TENNGEN) tenngen5020.cpp
 	$(CXX) tenngen2760.cpp -o $@ $(CXX_COMMON)
 
-tenngen-pythia: $(TENNGEN) tenngenEmbedded.cpp
-ifeq ($(ROOT_USE)$(PYTHIA_USE),truetrue)
-	$(CXX) tenngenEmbedded.cpp -o $@ -w $(CXX_COMMON) $(ROOT_LIB)\
+tenngen-pythia: $(TENNGEN) tenngenpythia.cpp
+ifeq ($(ROOT_USE)$(PYTHIA8_USE),truetrue)
+	$(CXX) tenngenpythia.cpp -o $@ -w $(CXX_COMMON) $(CXX_PYTHIA) $(ROOT_LIB)\
 	 `$(ROOT_CONFIG) --cflags --glibs`
 else
 	$(error Error: $@ requires ROOT and PYTHIA)

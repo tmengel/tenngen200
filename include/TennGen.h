@@ -156,7 +156,7 @@ private:
     
     int partNumbers[6];
 
-    TFile* myFile = new TFile("AuAu200Data.root");
+    TFile* myFile = new TFile("data/AuAu200Data.root");
 
     TH1F* ptDistroPip;
     TH1F* ptDistroPim;
@@ -298,6 +298,7 @@ public:
     void setnevent(int numevents){ settings.setNevents(numevents);}
     void setcent(int cent){settings.setCentBin(cent);}
     void seteta(float absEta){settings.setEtaRange(absEta);}
+    
     
     void setvN(int n, bool On){ settings.setVN(n,On); }
     void setpsiN(int n, float userPsi){ settings.setPsiN(n,userPsi); }

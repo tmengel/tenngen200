@@ -34,11 +34,6 @@ int main(){
     tg.init();
 
 
-
-    
-    //tg.do_Histos(true); // will make debug root plots
-    //tg.do_TTree(true); // will make TTree 
-
     // all of above tg can be achieve via
     //tg.defaultSettings200(true);
 

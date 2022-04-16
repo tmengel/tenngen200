@@ -634,7 +634,7 @@ tmp/TennGen.o: src/TennGen.cpp /usr/include/stdc-predef.h \
  //home/tmengel/root/include/TInetAddress.h \
  //home/tmengel/root/include/TTimer.h \
  //home/tmengel/root/include/TSysEvtHandler.h \
- //home/tmengel/root/include/TTime.h include/TGEvent.h \
+ //home/tmengel/root/include/TTime.h \
  /usr/include/x86_64-linux-gnu/c++/9/bits/stdc++.h \
  /usr/include/c++/9/ciso646 /usr/include/c++/9/csetjmp \
  /usr/include/setjmp.h /usr/include/x86_64-linux-gnu/bits/setjmp2.h \
@@ -715,4 +715,5 @@ tmp/TennGen.o: src/TennGen.cpp /usr/include/stdc-predef.h \
  /usr/include/asm-generic/posix_types.h \
  /usr/include/x86_64-linux-gnu/bits/statx-generic.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_statx_timestamp.h \
- /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h
+ /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h \
+ include/TGEvent.h

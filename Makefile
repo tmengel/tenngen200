@@ -69,9 +69,10 @@ $(LOCAL_EXAMPLE)/AuAu200Data.root: $(TENNGEN) $(LOCAL_SRC)/TennGen200Data.cpp
 	$(CXX) $< -o AuAuData $(LOCAL_SRC)/TennGen200Data.cpp -w $(CXX_COMMON) $(ROOT_LIB)\
 	 `$(ROOT_CONFIG) --cflags --glibs`
 	./AuAuData
-	cp AuAu200Data.root $(LOCAL_EXAMPLE)/AuAu200Data.root
-	cp -rf distro-PNG $(LOCAL_SHARE)/distro-PNG
+	cp AuAu200Data.root $(LOCAL_EXAMPLE)/data/AuAu200Data.root
+	cp -rf distro-PNG $(LOCAL_SHARE)/
 	cp AuAuData $(LOCAL_SHARE)/AuAuData
+	cp AuAuData $(LOCAL_EXAMPLE)/data/AuAuData 
 	rm -rf AuAu200Data.root AuAuData distro-PNG
 
 # Install.

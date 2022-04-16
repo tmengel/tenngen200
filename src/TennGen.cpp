@@ -166,7 +166,7 @@ void TennGen::runStream(){
                 std::cout << "TennGen Settings: STREAMING "  << std::endl ;
                 std::cout << "======================================="<<std::endl;
                 std::cout << "collison energy: " << settings.getCollEn() <<std::endl;
-                std::cout << "nEvents: " << settings.getNevents() << std::endl;
+                //std::cout << "nEvents: " << settings.getNevents() << std::endl;
                 std::cout << "Cent: " << settings.getCentBin() << std::endl;
                 std::cout << "Eta: " << settings.getEtaRange() << std::endl;
 
