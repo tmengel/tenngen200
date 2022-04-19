@@ -716,4 +716,4 @@ tmp/TennGen.o: src/TennGen.cpp /usr/include/stdc-predef.h \
  /usr/include/x86_64-linux-gnu/bits/statx-generic.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_statx_timestamp.h \
  /usr/include/x86_64-linux-gnu/bits/types/struct_statx.h \
- include/TGEvent.h
+ include/TGEvent.h include/tenngenAuAu.h

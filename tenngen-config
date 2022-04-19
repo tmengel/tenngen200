@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
-export ROOTDIR=/home/tmengel/root 
 
+export INSTALLDIR=/home/tmengel/jetbackgroundML/installdir
+
+export ROOTDIR=/home/tmengel/root 
 export ROOTLIBDIR=$ROOTDIR/lib
 export ROOTINCDIR=$ROOTDIR/include
 export ROOTCONFIG=$ROOTDIR/bin
@@ -14,6 +16,7 @@ export FASTLIB=/home/tmengel/fastjet-install/lib
 export FASTINC=/home/tmengel/fastjet-install/include
 
 
-./configure --cxx=g++ --with-root-lib=$ROOTCONFIG --with-root-lib=$ROOTLIBDIR --with-root-include=$ROOTINCDIR --with-pythia8-config=$PYTHIABIN --with-pythia8-lib=$PYTHIALIB --with-pythia8-include=$PYTHIAINC --with-fastjet3-config=$FASTJET --with-fastjet3-lib=$FASTLIB --with-fastjet3-include=$FASTINC
+./configure --cxx=g++ --with-root-lib=$ROOTCONFIG --with-root-lib=$ROOTLIBDIR --with-root-include=$ROOTINCDIR --with-pythia8-config=$PYTHIABIN --with-pythia8-lib=$PYTHIALIB --with-pythia8-include=$PYTHIAINC --with-fastjet3-config=$FASTJET --with-fastjet3-lib=$FASTLIB --with-fastjet3-include=$FASTINC --prefix=$INSTALLDIR
 
 make
+make install 

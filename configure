@@ -6,6 +6,7 @@
 #     OPTIONS:  List of valid options that can be passed by the user.
 ################################################################################
 CFG_FILE="Makefile.inc"
+AUAU_FILE="tenngenAuAu.h"
 read -d "" USAGE << "BLOCKTEXT"
 Usage: ./configure [OPTIONS]
 
@@ -413,3 +414,17 @@ ${PKG}_INCLUDE=$PKG_INC
 ${PKG}_LIB=$PKG_LIB
 BLOCKTEXT
 done
+echo $PWD
+echo $PREFIX_SHARE
+cd include/
+rm $AUAU_FILE
+touch $AUAU_FILE
+cat >> $AUAU_FILE << BLOCKTEXT
+#ifndef TENNGENAUAU_H
+#define TENNGENAUAU_H
+#include "tenngenbase.h"
+TENNGEN_BEGIN_NAMESPACE
+const char * const AUAUFILEDIR = "$PREFIX_SHARE/AuAu200Data.root";
+TENNGEN_END_NAMESPACE
+#endif
+BLOCKTEXT

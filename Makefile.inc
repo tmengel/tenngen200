@@ -1,5 +1,5 @@
 # TennGen configuration file.
-# Generated on Sat 16 Apr 2022 04:19:38 PM EDT with the user supplied options:
+# Generated on Tue 19 Apr 2022 05:52:06 PM EDT with the user supplied options:
 # --cxx=g++
 # --with-root-lib=/home/tmengel/root/bin
 # --with-root-lib=/home/tmengel/root/lib
@@ -10,12 +10,13 @@
 # --with-fastjet3-config=/home/tmengel/fastjet-install/bin
 # --with-fastjet3-lib=/home/tmengel/fastjet-install/lib
 # --with-fastjet3-include=/home/tmengel/fastjet-install/include
+# --prefix=/home/tmengel/jetbackgroundML/installdir
 
 # Install directory prefixes.
-PREFIX_BIN=/home/tmengel/tenngen200/bin
-PREFIX_INCLUDE=/home/tmengel/tenngen200/include
-PREFIX_LIB=/home/tmengel/tenngen200/lib
-PREFIX_SHARE=/home/tmengel/tenngen200/share/TennGen200
+PREFIX_BIN=/home/tmengel/jetbackgroundML/installdir/bin
+PREFIX_INCLUDE=/home/tmengel/jetbackgroundML/installdir/include
+PREFIX_LIB=/home/tmengel/jetbackgroundML/installdir/lib
+PREFIX_SHARE=/home/tmengel/jetbackgroundML/installdir/share/TennGen200
 
 # Compilation flags (see ./configure --help for further documentation).
 CXX=g++

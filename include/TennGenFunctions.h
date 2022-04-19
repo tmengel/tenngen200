@@ -16,6 +16,7 @@ std::string partcode(const int j);
 
 void makeDistros200(std::string rootfilename);
 
+void createAuAuHeader(std::string rootfileLocation);
 
 TENNGEN_END_NAMESPACE
 

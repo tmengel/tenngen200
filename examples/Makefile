@@ -43,9 +43,6 @@ tenngen-200: $(TENNGEN) $(AUAU200) tenngen200.cpp
 	$(CXX) tenngen200.cpp -o $@ $(CXX_COMMON) $(ROOT_LIB)\
 	 `$(ROOT_CONFIG) --cflags --glibs`
 
-tenngen-5020: $(TENNGEN) tenngen5020.cpp
-	$(CXX) tenngen2760.cpp -o $@ $(CXX_COMMON)
-
 tenngen-pythia: $(TENNGEN) tenngenpythia.cpp
 ifeq ($(ROOT_USE)$(PYTHIA8_USE),truetrue)
 	$(CXX) tenngenpythia.cpp -o $@ -w $(CXX_COMMON) $(CXX_PYTHIA) $(ROOT_LIB)\

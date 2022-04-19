@@ -4,6 +4,8 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
+#include <fstream>
+
 TENNGEN_BEGIN_NAMESPACE
 
 Double_t Multiplicity(Double_t* X, Double_t* par){

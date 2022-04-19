@@ -11,7 +11,7 @@ int main(){
     TennGen tg;
 
     tg.setcollen(200);
-    tg.setnevent(100000);
+    tg.setnevent(1000);
     tg.setcent(0); // 0-10%
     tg.seteta(1.1); // abs value between 0 and 1.1
 

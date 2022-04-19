@@ -3,6 +3,7 @@
 
 #include "TGParticle.h"
 #include "TGEvent.h"
+#include "tenngenAuAu.h"
 
 
 
@@ -156,7 +157,7 @@ private:
     
     int partNumbers[6];
 
-    TFile* myFile = new TFile("data/AuAu200Data.root");
+    TFile* myFile = new TFile(tenngen::AUAUFILEDIR);
 
     TH1F* ptDistroPip;
     TH1F* ptDistroPim;
