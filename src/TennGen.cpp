@@ -2,6 +2,7 @@
 #include <bits/stdc++.h>
 #include <iostream>
 #include <sys/stat.h>
+#include "TGraphErrors.h"
 #include <sys/types.h>
 
 TENNGEN_BEGIN_NAMESPACE
@@ -245,8 +246,9 @@ const int TG200::raw_high[]={608,430,311,145};
 const int TG200::raw_low[]={431,312,146,56};
 const int TG200::raw_bin[]= {177,118,165,89};
 
-const float TG200::correction_low[] = {82,36,-10,-22};
-const float TG200::correction_high[]= {138,64,46,32};
+const int TG200::correction_high[]={778,499,344,153};
+const int TG200::correction_low[]={500,345,154,58};
+
 
 const float TG200::piplusRatios[] = {0.396738386,0.400412797,0.400958581,0.40230616};
 const float TG200::piminusRatios[] = {0.396738386,0.400412797,0.400958581,0.40230616};
@@ -485,19 +487,19 @@ float TG200::dNdPhi(){
         return (1.0 + 2.0*(v1*cos(phiPart-psi1)+v2*cos(2.0*(phiPart-psi2))+v3*cos(3.0*(phiPart-psi3))+v4*cos(4.0*(phiPart-psi4))))/(2.0*M_PI);
 }
 int TG200::SpectraCentBin(){
-        if(multiplicity>=431){return 0;}
-        else if(multiplicity>=312){return 1;}
-        else if(multiplicity>=146){return 2;}
-        else if(multiplicity>=56){return 3;}
+        if(multiplicity>=500){return 0;}
+        else if(multiplicity>=345){return 1;}
+        else if(multiplicity>=154){return 2;}
+        else if(multiplicity>=58){return 3;}
         else{return 6;}
 }
 int TG200::HarmonicCentBin(){
-        if(multiplicity>=431){return 0;}
-        else if(multiplicity>=312){return 1;}
-        else if(multiplicity>=217){return 2;}
-        else if(multiplicity>=146){return 3;}
-        else if(multiplicity>=94){return 4;}
-        else if(multiplicity>=56){return 5;}
+        if(multiplicity>=500){return 0;}
+        else if(multiplicity>=345){return 1;}
+        else if(multiplicity>=234 ){return 2;}
+        else if(multiplicity>=154){return 3;}
+        else if(multiplicity>=99){return 4;}
+        else if(multiplicity>=58){return 5;}
         else{return 6;}
 }
 void TG200::clearEventBuffer(){
@@ -532,8 +534,9 @@ void TG200::genEvents(){
 
             spectraCent = SpectraCentBin();
             harmonicCent = HarmonicCentBin();
-            multiplicity = int( 2.0*etaRange*( multiplicity+int( fRandom->Uniform(correction_low[spectraCent], correction_high[spectraCent]) ) ) );
-                                      
+            //multiplicity = int( 2.0*etaRange*( multiplicity+int( fRandom->Uniform(correction_low[spectraCent], correction_high[spectraCent]) ) ) );
+            multiplicity = int((etaRange/0.5)*multiplicity);
+
             partNumbers[0] = int(piplusRatios[spectraCent]*multiplicity);
             partNumbers[1] = int(piminusRatios[spectraCent]*multiplicity);
             partNumbers[2] = int(kaplusRatios[spectraCent]*multiplicity);
@@ -715,8 +718,16 @@ void TG200::genEventsQA(){
         TH2D *v3_P_h5 = new TH2D("v3_P_h5" , "v_{3} vs p_{T} for p^{+}, p^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
         TH2D *v4_P_h5 = new TH2D("v4_P_h5" , "v_{4} vs p_{T} for p^{+}, p^{-}" , 100 , 0 , 6 , 100 , -0.1 , 0.3);
 
-        nEvent = 2500000;
+        nEvent = 25000;
        
+
+        TH1D* multiplicity_all_h = new TH1D("multiplicity_all_h","multiplicity_all_h",1800,0,1800);
+        TH1D *multiplicity_cent0_h = new TH1D("multiplicity_cent0_h" , "multiplicity distribution for cent 0" ,1800 , 0 , 1800);
+        TH1D *multiplicity_cent1_h = new TH1D("multiplicity_cent1_h" , "multiplicity distribution for cent 1" ,1800 , 0 , 1800);
+        TH1D *multiplicity_cent2_h = new TH1D("multiplicity_cent2_h" , "multiplicity distribution for cent 2" ,1800 , 0 , 1800);
+        TH1D *multiplicity_cent3_h = new TH1D("multiplicity_cent3_h" , "multiplicity distribution for cent 3" ,1800 , 0 , 1800);
+
+
         for(int i=0; i< 4; i++){
             setCent = i;
             getRootDistros();
@@ -735,8 +746,16 @@ void TG200::genEventsQA(){
                 while(SpectraCentBin() != setCent){   multiplicity = (int)MultiDistro->GetRandom(fRandom);  }
                 spectraCent = SpectraCentBin();
                 harmonicCent = HarmonicCentBin();
-                multiplicity = int( 2.0*etaRange*( multiplicity+int( fRandom->Uniform(correction_low[spectraCent], correction_high[spectraCent]) ) ) );
-               
+                 //multiplicity = int( 2.0*etaRange*( multiplicity+int( fRandom->Uniform(correction_low[spectraCent], correction_high[spectraCent]) ) ) );
+                multiplicity = int((etaRange/0.5)*multiplicity);
+                
+                multiplicity_all_h->Fill(multiplicity);
+                if(setCent == 0) multiplicity_cent0_h->Fill(multiplicity);
+                if(setCent == 1) multiplicity_cent1_h->Fill(multiplicity);
+                if(setCent == 2) multiplicity_cent2_h->Fill(multiplicity);
+                if(setCent == 3) multiplicity_cent3_h->Fill(multiplicity);
+
+                
                 partNumbers[0] = int(piplusRatios[spectraCent]*multiplicity);
                 partNumbers[1] = int(piminusRatios[spectraCent]*multiplicity);
                 partNumbers[2] = int(kaplusRatios[spectraCent]*multiplicity);
@@ -894,6 +913,69 @@ void TG200::genEventsQA(){
            clearDistroBuffer();
         }
 
+        // multiplicity_cent0_h->Scale(1./multiplicity_cent0_h->Integral());
+        // multiplicity_cent1_h->Scale(1./multiplicity_cent1_h->Integral());
+        // multiplicity_cent2_h->Scale(1./multiplicity_cent2_h->Integral());
+        // multiplicity_cent3_h->Scale(1./multiplicity_cent3_h->Integral());
+        multiplicity_all_h->Scale(1./multiplicity_all_h->Integral());
+
+        multiplicity_cent0_h->SetLineColor(kRed);
+        multiplicity_cent1_h->SetLineColor(kBlue);
+        multiplicity_cent2_h->SetLineColor(kGreen);
+        multiplicity_cent3_h->SetLineColor(kCyan);
+
+
+        TCanvas *c2 = new TCanvas("c2","c2",800,600);
+        c2->cd();
+        gPad->SetLogy();
+        gPad->SetGrid();
+        multiplicity_all_h->Draw("HIST");
+        //multiplicity_all_h->Rebin(1);
+        multiplicity_all_h->SetLineWidth(2);
+        multiplicity_all_h->SetLineColor(kBlack);
+        multiplicity_all_h->SetFillColorAlpha(kBlack,0.25);
+        multiplicity_all_h->SetFillStyle(3001);
+
+        multiplicity_all_h->GetXaxis()->SetTitle("N_{ch}");
+        multiplicity_all_h->GetYaxis()->SetTitle("#frac{1}{N} dN/dN_{ch}^{raw}");
+        multiplicity_all_h->GetYaxis()->SetTitleOffset(1.5);
+        multiplicity_all_h->GetYaxis()->SetRangeUser(0.0001,1);
+        multiplicity_all_h->GetXaxis()->SetRangeUser(0,1800);
+        multiplicity_all_h->GetXaxis()->SetLabelSize(0.03);
+        multiplicity_all_h->GetYaxis()->SetLabelSize(0.03);
+        multiplicity_all_h->GetXaxis()->SetTitleSize(0.03);
+        multiplicity_all_h->GetYaxis()->SetTitleSize(0.03);
+        multiplicity_all_h->GetXaxis()->SetTitleOffset(1.1);
+        multiplicity_all_h->GetYaxis()->SetTitleOffset(1.1);
+        multiplicity_all_h->SetTitle("");
+        multiplicity_all_h->GetXaxis()->CenterTitle();
+
+        multiplicity_cent0_h->Draw("HIST same");
+        multiplicity_cent0_h->SetFillColorAlpha(kRed,0.5);
+        multiplicity_cent0_h->SetFillStyle(3001);
+        multiplicity_cent1_h->Draw("HIST same");
+        multiplicity_cent1_h->SetFillColorAlpha(kBlue,0.5);
+        multiplicity_cent1_h->SetFillStyle(3001);
+        multiplicity_cent2_h->Draw("HIST same");
+        multiplicity_cent2_h->SetFillColorAlpha(kGreen,0.5);
+        multiplicity_cent2_h->SetFillStyle(3001);
+        multiplicity_cent3_h->Draw("HIST same");
+        multiplicity_cent3_h->SetFillColorAlpha(kCyan,0.5);
+        multiplicity_cent3_h->SetFillStyle(3001);
+
+        TLegend *legend = new TLegend(0.55,0.65,0.85,0.85);
+        legend->SetBorderSize(0);
+        legend->SetFillColor(0);
+
+        legend->AddEntry(multiplicity_all_h,"STAR 200 GeV Au+Au N_{ch}^{raw}","lf");
+        legend->AddEntry(multiplicity_cent0_h,"0-10%","lf");
+        legend->AddEntry(multiplicity_cent1_h,"10-20%","lf");
+        legend->AddEntry(multiplicity_cent2_h,"20-40%","lf");
+        legend->AddEntry(multiplicity_cent3_h,"40-60%","lf");
+        legend->Draw();
+        c2->SetTitle("Multiplicity");
+        c2->Write();
+
         histpsi_1->Write();
         histpsi_2->Write();
         histpsi_3->Write();
@@ -999,7 +1081,50 @@ void TG200::getRootDistros(){
         ptDistroKam = (TH1F*)myFile->Get(ptHistoKam.c_str());
         ptDistroPro = (TH1F*)myFile->Get(ptHistoPro.c_str());
         ptDistroPbar = (TH1F*)myFile->Get(ptHistoPbar.c_str());
-        MultiDistro = (TH1F*)myFile->Get("MultiplicityDistro");
+
+
+        TH1F* All_Multiplicity_Distro = (TH1F*)myFile->Get("MultiplicityDistro");
+        TH1F *multiplicity_cent_h = new TH1F("multiplicity_cent_h" , "multiplicity distribution for cent 0" ,800 , 0 , 800);
+
+        int raw_temp_low[9] = {14,30,56,94,145,217,312,431,510};
+        int raw_temp_high[9]={29,55,93,144,216,311,430,509,608};
+        float raw_temp_mean[9]= {22.5,43.1,74.8,120,181,264,370,470,559};
+        int corr_mean[9]= {22,45,78,126,195,287,421,558,691};
+        float corr_err[9] = {2,3,6,9,14,20,30,40,49};
+
+        float nbin_raw[9];
+        float diff_mean[9];
+        float raw_error[9];
+
+        for(int i = 0;i<9;i++){
+                nbin_raw[i] = raw_temp_high[i]-raw_temp_low[i];
+                diff_mean[i] = corr_mean[i]-raw_temp_mean[i];
+                raw_error[i] = nbin_raw[i]/2;
+        }
+
+        TGraphErrors *mygraph = new TGraphErrors(9,raw_temp_mean,diff_mean,raw_error,corr_err);
+        TF1* fit_pol = new TF1("fit_pol","pol3",0,600);
+        mygraph->Fit(fit_pol,"BRQ");
+        float p0 = fit_pol->GetParameter(0);
+        float p1 = fit_pol->GetParameter(1);
+        float p2 = fit_pol->GetParameter(2);
+        float p3 = fit_pol->GetParameter(3);
+
+        TF1* fit_final = new TF1("fit_final","[0]+[1]*x+[2]*x**2+[3]*x**3",0,800);
+        fit_final->SetParameters(p0,p1,p2,p3);
+        fit_final->FixParameter(0,p0);
+        fit_final->FixParameter(1,p1);
+        fit_final->FixParameter(2,p2);
+        fit_final->FixParameter(3,p3);
+
+        for(int i=0;i<1000000;i++){
+                float multtemp = All_Multiplicity_Distro->GetRandom();
+                multtemp+=fit_final->Eval(multtemp);
+                multiplicity_cent_h->Fill(multtemp);
+        }
+        multiplicity_cent_h->Scale(1/multiplicity_cent_h->Integral());
+        MultiDistro= (TH1F*)multiplicity_cent_h->Clone("MultiplicityDistro");
+       // MultiDistro = (TH1F*)myFile->Get("MultiplicityDistro");
 
 
 }

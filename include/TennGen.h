@@ -4,6 +4,7 @@
 #include "TGParticle.h"
 #include "TGEvent.h"
 #include "tenngenAuAu.h"
+#include "TLegend.h"
 
 
 
@@ -128,8 +129,8 @@ private:
     const static int raw_low[4];
     const static int raw_bin[4];
 
-    const static float correction_low[4];
-    const static float correction_high[4];
+    const static int correction_low[4];
+    const static int correction_high[4];
 
     const static float piplusRatios[4];
     const static float piminusRatios[4];
