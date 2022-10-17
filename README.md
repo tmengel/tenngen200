@@ -8,6 +8,16 @@ Current Features:
 - Variable particle multiplicities.
 - Centrality binning: 0-10%, 10-20%, 20-40%, 40-60%.
 
+Random Multiplicity from fitted 𝑁_𝑐ℎ distribution
+https://arxiv.org/pdf/0808.2041.pdf
+Charged Particle Ratios for pi, K, P	
+https://arxiv.org/pdf/0808.2041.pdf , https://arxiv.org/pdf/1304.3410.pdf
+Identified particle pt spectrum fit with Boltzmann-Gibbs Blast wave
+https://arxiv.org/pdf/1304.3410.pdf
+Pt dependent identified particle flow harmonics (v2,v3,v4)
+https://arxiv.org/pdf/1412.1038.pdf
+
+
 Quick start:
 1) Change <export ROOTDIR=[YOUR_ROOT_DIRECTORY]/lib> to your local root install directory in <tenngen-config> file.
 2) <chmod +x tenngen-config>
