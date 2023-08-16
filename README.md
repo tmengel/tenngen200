@@ -1,4 +1,5 @@
 # TennGen200
+a href="https://zenodo.org/badge/latestdoi/480127084"><img src="https://zenodo.org/badge/480127084.svg" alt="DOI"></a>
 Adaptation of TennGen for 200 GeV Au-Au collisions. Random number generation of heavy ion collisions based off sampling measured charged particle momentum spectra, particle flow coefficents and charged particle multiplicty at RHIC. Implements Van-Neuman method of accept/rejection to speed up event generation.
 
 Current Features:
